@@ -100,6 +100,13 @@ class Subtitles(object):
             self.context.log_debug('Subtitle unescape: failed to unescape text')
         return text
 
+    def _titlesafe(self, text):
+        try:
+            text = text.replace(" position:0%", " position:5%")
+        except:
+            self.context.log_debug('Subtitle title safe: failed to adjust position attribute"')
+        return text
+
     def get_subtitles(self):
         if self.prompt_override:
             languages = self.LANG_PROMPT
@@ -209,7 +216,7 @@ class Subtitles(object):
 
                 if result_auto.text:
                     self.context.log_debug('Subtitle found for: %s' % language)
-                    self._write_file(fname, bytearray(self._unescape(result_auto.text), encoding='utf8', errors='ignore'))
+                    self._write_file(fname, bytearray(self._titlesafe(self._unescape(result_auto.text)), encoding='utf8', errors='ignore'))
                     return [fname]
                 else:
                     self.context.log_debug('Failed to retrieve subtitles for: %s' % language)
